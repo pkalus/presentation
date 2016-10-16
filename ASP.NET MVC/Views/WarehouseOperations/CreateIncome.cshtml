@@ -1,0 +1,156 @@
+﻿@using CCV.IILSC.Core.Repositories
+@using CCV.IILSC.Web.Content.Resources
+@using CCV.IILSC.Web.ViewModels.WarehouseOperations
+@model CCV.IILSC.Web.ViewModels.WarehouseOperations.WarehouseOperationInitialization
+@{
+    ViewBag.Title = $"{ViewResources.Income} ({WarehouseOperationsResources.Step1})";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Panel
+{
+    <h1>@ViewResources.WareIncome.ToUpper()</h1>
+}
+<div class="wizard">
+    @Html.Partial("WarehouseOperationStepList", new WarehouseOperationStep { Step = 1, WarehouseOperationKind = WarehouseOperationKind.Income })
+    <div class="panel col-lg-10">
+        <div class="panel-warehouse-operation">
+            <h2>@ViewResources.ManualWareIncome.ToUpper()</h2>
+        </div>
+        <div class="panel-body">
+            @using (Html.BeginForm())
+            {
+                <div class="panel col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label no-padding col-xs-4 right-align">@ViewResources.DocumentNubmer.ToUpper():</label>
+                        <div class="col-xs-6">
+                            @if (Model.GenerateDocumentNumber)
+                            {
+                                @Html.TextBoxFor(x => x.DocumentNumber, new {@class = "form-control", id = "DocumentNumber", placeholder = ViewResources.DocumentNubmer.ToLower(), disabled = "disabled"})
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(x => x.DocumentNumber, new { @class = "form-control", id = "DocumentNumber", placeholder = ViewResources.DocumentNubmer.ToLower()})
+                            }
+
+                            <div class="checkbox-inline">
+                                @Html.CheckBoxFor(x => x.GenerateDocumentNumber, new {@class = "", id = "GenerateDocumentNumber"})<label for="GenerateDocumentNumber" class="">@ViewResources.GenerateDocumentNumber</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="panel col-sm-6">
+                    <div class="form-group">
+                        <label class="control-label no-padding col-xs-4 right-align">@ViewResources.Date.ToUpper():</label>
+                        <div class="col-xs-6">
+                            <div class="input-group date">
+                               @Html.TextBoxFor(x => x.Date, "{0:d.M.yyyy}", new { @class = "form-control col-sm-5", id = "date" })<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    @Html.HiddenFor(x => x.Kind)
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+                @Html.ValidationSummary(false, "", new { @class = "alert alert-danger" })
+                <button type="submit" class="btn btn-lg btn-warning pull-right">@ViewResources.CreateIncome.ToUpper()&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></button>
+            }
+        </div>
+        <div class="panel-warehouse-operation">
+            <h3>@ViewResources.WareIncomeVerb.ToUpper()</h3>
+        </div><br/>
+        @using (Html.BeginForm())
+            {
+            <div class="col-lg-6 panel">
+                <div class="form-group">
+                    <label class="control-label no-padding col-xs-3 right-align">@ViewResources.Ware.ToUpper():</label>
+                    <div class="col-xs-6">
+                        <div class="input-group ">
+                            @Html.TextBox("WareName", null, new { @class = "form-control", id = "documentNumber", placeholder = ViewResources.SearchWare.ToLower(), disabled = "disabled" })<span class="input-group-addon"><i class="glyphicon glyphicon-search"></i></span>
+                        </div>
+                    </div>
+                    <div class="col-xs-2 no-padding">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="control-label no-padding col-xs-3 right-align">@ViewResources.Quantity.ToUpper():</label>
+                    <div class="col-xs-6">
+                        @Html.TextBox("Quantity", null, new { @class = "form-control ", id = "date", disabled = "disabled" })
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+                <div class="col-lg-6 panel">
+                    <div class="form-group">
+                        <label class="control-label no-padding col-xs-3 right-align">@ViewResources.Date.ToUpper():</label>
+                        <div class="col-xs-6">
+                            <div class="input-group ">
+                                @Html.TextBox("CreatedDate", null, "{0:d.M.yyyy}", new { @class = "form-control col-sm-5", id = "date", disabled = "disabled" })<span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="form-group">
+                        <label class="control-label no-padding col-xs-3 right-align">@ViewResources.Compartment.ToUpper():</label>
+                        <div class="col-xs-6">
+                            <div class="input-group ">
+                                @Html.TextBox("CompartmentId", null, new { @class = "form-control", id = "date", disabled = "disabled" })
+                                <span class="input-group-addon"><i class="glyphicon glyphicon-hand-up"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+                <button type="submit" class="btn btn-warning pull-right" disabled="disabled">@ViewResources.Continue.ToUpper()&nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></button>
+        }
+        <div class="clearfix"></div>
+        <div class="panel-warehouse-operation">
+            <h3>@ViewResources.ItemsOfIncome.ToUpper()</h3>
+        </div>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>@ViewResources.WareName</th>
+                    <th>@ViewResources.Quantity</th>
+                    <th>@ViewResources.Compartment</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="3">
+                        @ViewResources.NoRecordWasFound
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <br/><br />
+        <button type="submit" class="btn btn-lg btn-warning pull-right" disabled="disabled">@ViewResources.FinishIncome.ToUpper() &nbsp;&nbsp;<span class="glyphicon glyphicon-chevron-right"></span></button>
+        <div class="clearfix"></div>
+        <br/>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script src="~/Content/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Content/Plugins/bootstrap-datepicker/js/bootstrap-datepicker.min.js"></script>
+    <link href="~/Content/Plugins/bootstrap-datepicker/css/bootstrap-datepicker.min.css" rel="stylesheet" />
+    <script src="~/Content/Plugins/bootstrap-datepicker/locales/bootstrap-datepicker.cs.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('.input-group.date').datepicker({
+                language: 'cs',
+                format: 'd.m.yyyy',
+                autoclose: true
+            });
+
+            $("#GenerateDocumentNumber").change(function () {
+                if ($("#GenerateDocumentNumber").is(':checked')) {
+                    $("#DocumentNumber").prop('disabled', true);
+                } else {
+                    $("#DocumentNumber").prop('disabled', false);
+                }
+            });
+        });
+    </script>
+}
